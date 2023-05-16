@@ -1,0 +1,59 @@
+{
+    "name": "yamadashy/phpstan-friendly-formatter",
+    "type": "phpstan-extension",
+    "description": "Simple error formatter for PHPStan that display code frame",
+    "keywords": ["package", "php", "phpstan", "static analysis"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kazuki Yamada",
+            "email": "koukun0120@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "php-parallel-lint/php-console-highlighter": "^0.3 || ^0.4 || ^0.5 || ^1.0",
+        "phpstan/phpstan": "^0.12 || ^1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.4.0",
+        "grifart/phpstan-oneline": "^0.4.2",
+        "phpstan/phpstan-phpunit": "^0.12.22 || ^1.0",
+        "phpunit/phpunit": "^8.5.26"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Yamadashy\\PhpStanFriendlyFormatter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "preferred-install": "dist"
+    },
+    "extra": {
+        "phpstan": {
+            "includes": ["extension.neon"]
+        }
+    },
+    "scripts": {
+        "tests": [
+            "@cs-fix-dry",
+            "@analyze",
+            "@test"
+        ],
+        "test": "phpunit",
+        "analyze": "phpstan analyze -c phpstan.neon.dist --error-format friendly",
+        "analyze-raw": "phpstan analyze -c phpstan.neon.dist --error-format raw",
+        "analyze-table": "phpstan analyze -c phpstan.neon.dist --error-format table",
+        "analyze-oneline": "phpstan analyze -c phpstan.neon.dist --error-format oneline",
+        "cs-fix": "php-cs-fixer fix",
+        "cs-fix-dry": "php-cs-fixer fix --dry-run"
+    }
+}

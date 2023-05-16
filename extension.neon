@@ -1,0 +1,20 @@
+parametersSchema:
+    friendly: structure([
+        lineBefore: int()
+        lineAfter: int()
+        editorUrl: schema(string(), nullable())
+    ])
+
+parameters:
+    friendly:
+        lineBefore: 3
+        lineAfter: 3
+        editorUrl: null
+
+services:
+    errorFormatter.friendly:
+        class: Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter
+        arguments:
+            lineBefore: %friendly.lineBefore%
+            lineAfter: %friendly.lineAfter%
+            editorUrl: %friendly.editorUrl%

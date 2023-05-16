@@ -1,0 +1,71 @@
+name: Tests
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  analysis:
+    name: '[analysis] PHP ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['8.1']
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
+
+      - name: Run lint
+        run: find ./src ./tests -name "*.php" | xargs -P10 -n1 php -l
+
+      - name: Run coding standards check
+        run: composer run cs-fix-dry
+
+      - name: Run static analysis
+        run: composer run analyze
+
+  test:
+    name: '[test] PHP ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
+
+      - name: Run lint
+        run: find ./src ./tests -name "*.php" | xargs -P10 -n1 php -l
+
+      - name: Run unit test
+        run: composer run test

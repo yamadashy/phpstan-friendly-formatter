@@ -1,0 +1,43 @@
+includes:
+    - extension.neon
+    - vendor/grifart/phpstan-oneline/config.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+
+    excludePaths:
+        - tests/data/
+        - tests/Abstracts/
+
+    checkUninitializedProperties: true
+    checkMissingCallableSignature: true
+
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Skip check dataProvider return type
+        -
+            message: '#Test::data[a-zA-Z0-9_]+\(\) return type has no value type specified in iterable type#'
+            path: tests/
+
+        # This uses internal code that is not covered by backward compatibility promise, but only acceptable for testing.
+        -
+            message: '#is not covered by backward compatibility promise. The (method|class) might change in a minor PHPStan version.#'
+            path: tests/
+
+        # Support for php-console-highlighter < 1.0
+        -
+            message: '#Property Yamadashy\\PhpStanFriendlyFormatter\\CodeHighlighter::\$highlighter has unknown class (PHP_Parallel_Lint|JakubOnderka)\\PhpConsoleHighlighter\\Highlighter as its type.#'
+            path: src/CodeHighlighter.php
+        -
+            message: '#Call to method getCodeSnippet\(\) on an unknown class (PHP_Parallel_Lint|JakubOnderka)\\PhpConsoleHighlighter\\Highlighter.#'
+            path: src/CodeHighlighter.php
+
+    friendly:
+        lineBefore: 3
+        lineAfter: 3
+        editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
