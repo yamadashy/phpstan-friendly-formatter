@@ -3,7 +3,18 @@
   A simple error formatter for <a href="https://phpstan.org/">PHPStan</a> that display code frame.
 </div>
 <p align="center">
-    <img src="./docs/example.png" alt="PHPStan Example" height="300">
+    <table>
+        <tr>
+            <th>Before</th>
+            <td><img src="./docs/example-before.png" alt="PHPStan Example">
+            </td>
+        </tr>
+        <tr>
+            <th>After</th>
+            <td><img src="./docs/example.png" alt="PHPStan Example">
+            </td>
+        </tr>
+    </table>
 </p>
 <p align="center">
   <a href="https://github.com/yamadashy/phpstan-friendly-formatter/actions"><img src="https://img.shields.io/github/actions/workflow/status/yamadashy/phpstan-friendly-formatter/tests.yml?branch=main&label=tests&logo=github" alt="Test Status"></a>
