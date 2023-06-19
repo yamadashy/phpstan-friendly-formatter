@@ -180,6 +180,7 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 
     /**
      * @dataProvider dataFormatterResultProvider
+     *
      * @covers ::formatErrors
      */
     public function testFormatErrors(
@@ -197,8 +198,8 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         $outputContent = StringUtil::escapeTextColors($this->getOutputContent());
         $outputContent = StringUtil::rtrimByLines($outputContent);
 
-        static::assertSame($expectedExitCode, $exitCode);
-        static::assertSame($expectedOutput, $outputContent);
+        self::assertSame($expectedExitCode, $exitCode);
+        self::assertSame($expectedOutput, $outputContent);
     }
 
     /**
