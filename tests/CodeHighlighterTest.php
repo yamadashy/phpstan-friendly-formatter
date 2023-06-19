@@ -81,6 +81,7 @@ final class CodeHighlighterTest extends TestCase
 
     /**
      * @dataProvider dataResultProvider
+     *
      * @covers ::highlight
      */
     public function testHighlight(
@@ -98,6 +99,6 @@ final class CodeHighlighterTest extends TestCase
         $output = StringUtil::escapeTextColors($output);
         $output = StringUtil::rtrimByLines($output);
 
-        static::assertSame($expectedOutput, $output);
+        self::assertSame($expectedOutput, $output);
     }
 }
