@@ -15,7 +15,10 @@ use Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter;
  */
 final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 {
-    public function dataFormatterResultProvider(): iterable
+    /**
+     * @return \Generator<string, (int|string)[], void, void>
+     */
+    public function provideFormatErrorsCases(): iterable
     {
         $currentDir = __DIR__;
 
@@ -179,7 +182,7 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     }
 
     /**
-     * @dataProvider dataFormatterResultProvider
+     * @dataProvider provideFormatErrorsCases
      *
      * @covers ::formatErrors
      */

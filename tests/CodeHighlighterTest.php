@@ -13,7 +13,10 @@ use Yamadashy\PhpStanFriendlyFormatter\CodeHighlighter;
  */
 final class CodeHighlighterTest extends TestCase
 {
-    public function dataResultProvider(): iterable
+    /**
+     * @return \Generator<string, (int|string)[], void, void>
+     */
+    public function provideHighlightCases(): iterable
     {
         yield 'show 3 lines before and after' => [
             __DIR__.'/data/AnalysisTargetFoo.php',
@@ -80,7 +83,7 @@ final class CodeHighlighterTest extends TestCase
     }
 
     /**
-     * @dataProvider dataResultProvider
+     * @dataProvider provideHighlightCases
      *
      * @covers ::highlight
      */
