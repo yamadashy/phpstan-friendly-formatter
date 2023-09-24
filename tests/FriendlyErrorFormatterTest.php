@@ -236,13 +236,19 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
             return new \PHPStan\Command\AnalysisResult($fileErrors, $genericErrors, [], $warnings, false, null, true);
         }
 
-        // compatibility to less than 1.11.0
+        // compatibility to less than 1.9.0
         if (8 === $numOfParams) {
             // @phpstan-ignore-next-line
             return new \PHPStan\Command\AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true);
         }
 
+        // compatibility to less than 1.10.34
+        if (9 === $numOfParams) {
+            // @phpstan-ignore-next-line
+            return new \PHPStan\Command\AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true));
+        }
+
         // @phpstan-ignore-next-line
-        return new \PHPStan\Command\AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true));
+        return new \PHPStan\Command\AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), false);
     }
 }
