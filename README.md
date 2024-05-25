@@ -17,6 +17,7 @@
     </table>
 </p>
 <p align="center">
+  <a href="https://packagist.org/packages/yamadashy/phpstan-friendly-formatter"><img src="https://shields.io/packagist/dt/yamadashy/phpstan-friendly-formatter" alt="Downloads"></a>
   <a href="https://github.com/yamadashy/phpstan-friendly-formatter/actions"><img src="https://img.shields.io/github/actions/workflow/status/yamadashy/phpstan-friendly-formatter/tests.yml?branch=main&label=tests&logo=github" alt="Test Status"></a>
   <a href="https://packagist.org/packages/yamadashy/phpstan-friendly-formatter"><img src="https://poser.pugx.org/yamadashy/phpstan-friendly-formatter/v/stable.svg" alt="Latest Version"></a>
   <a href="https://github.com/yamadashy/phpstan-friendly-formatter/blob/master/LICENSE.md"><img src="https://poser.pugx.org/yamadashy/phpstan-friendly-formatter/license.svg" alt="License"></a>
