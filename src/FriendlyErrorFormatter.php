@@ -41,6 +41,7 @@ class FriendlyErrorFormatter implements ErrorFormatter
             return 0;
         }
 
+        $output->writeLineFormatted('');
         $this->writeFileSpecificErrors($analysisResult, $output);
         $this->writeNotFileSpecificErrors($analysisResult, $output);
         $this->writeWarnings($analysisResult, $output);
@@ -62,8 +63,8 @@ class FriendlyErrorFormatter implements ErrorFormatter
         }
 
         foreach ($errorsByFile as $relativeFilePath => $errors) {
-            $output->writeLineFormatted($relativeFilePath);
-            $output->writeLineFormatted(str_repeat('-', mb_strlen($relativeFilePath)));
+            $output->writeLineFormatted("❯ {$relativeFilePath}");
+            $output->writeLineFormatted('--'.str_repeat('-', mb_strlen($relativeFilePath)));
             $output->writeLineFormatted('');
 
             foreach ($errors as $error) {
