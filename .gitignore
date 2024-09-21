@@ -4,3 +4,5 @@
 composer.lock
 .phpunit.result.cache
 .php-cs-fixer.cache
+repopack-output.xml
+.DS_Store
