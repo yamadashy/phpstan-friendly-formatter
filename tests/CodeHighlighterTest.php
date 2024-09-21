@@ -16,7 +16,7 @@ final class CodeHighlighterTest extends TestCase
     /**
      * @return \Generator<string, (int|string)[], void, void>
      */
-    public function provideHighlightCases(): iterable
+    public static function provideHighlightCases(): iterable
     {
         yield 'show 3 lines before and after' => [
             __DIR__.'/data/AnalysisTargetFoo.php',

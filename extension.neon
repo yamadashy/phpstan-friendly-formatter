@@ -7,8 +7,8 @@ parametersSchema:
 
 parameters:
     friendly:
-        lineBefore: 3
-        lineAfter: 3
+        lineBefore: 2
+        lineAfter: 2
         editorUrl: null
 
 services:
