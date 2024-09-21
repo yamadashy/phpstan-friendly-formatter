@@ -2,20 +2,9 @@
   <h1>PHPStan Friendly Formatter</h1>
   A simple error formatter for <a href="https://phpstan.org/">PHPStan</a> that display code frame.
 </div>
-<p align="center">
-    <table>
-        <tr>
-            <th>Before</th>
-            <td><img src="./docs/example-before.png" alt="PHPStan Example">
-            </td>
-        </tr>
-        <tr>
-            <th>After</th>
-            <td><img src="./docs/example.png" alt="PHPStan Example">
-            </td>
-        </tr>
-    </table>
-</p>
+
+<img src="./docs/example.png" alt="PHPStan Friendly Formatter Example" width="100%">
+
 <p align="center">
   <a href="https://packagist.org/packages/yamadashy/phpstan-friendly-formatter"><img src="https://shields.io/packagist/dt/yamadashy/phpstan-friendly-formatter" alt="Downloads"></a>
   <a href="https://github.com/yamadashy/phpstan-friendly-formatter/actions"><img src="https://img.shields.io/github/actions/workflow/status/yamadashy/phpstan-friendly-formatter/tests.yml?branch=main&label=tests&logo=github" alt="Test Status"></a>

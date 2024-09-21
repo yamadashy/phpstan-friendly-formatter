@@ -44,6 +44,7 @@ class FriendlyErrorFormatter implements ErrorFormatter
         $this->writeFileSpecificErrors($analysisResult, $output);
         $this->writeNotFileSpecificErrors($analysisResult, $output);
         $this->writeWarnings($analysisResult, $output);
+        $this->writeGroupedErrorsSummary($analysisResult, $output);
         $this->writeFinalMessage($analysisResult, $output);
 
         return 1;
@@ -56,6 +57,7 @@ class FriendlyErrorFormatter implements ErrorFormatter
         foreach ($analysisResult->getFileSpecificErrors() as $error) {
             $message = $error->getMessage();
             $tip = $this->getFormattedTip($error);
+            $errorIdentifier = $error->getIdentifier();
             $filePath = $error->getTraitFilePath() ?? $error->getFilePath();
             $relativeFilePath = $this->relativePathHelper->getRelativePath($filePath);
             $line = $error->getLine();
@@ -74,13 +76,21 @@ class FriendlyErrorFormatter implements ErrorFormatter
             }
 
             $output->writeLineFormatted("  <fg=red;options=bold>✘</> <fg=default;options=bold>{$message}</>");
+
             if (null !== $tip) {
-                $output->writeLineFormatted("  <fg=default>Tip. {$tip}</>");
+                $output->writeLineFormatted("  <fg=default>💡  {$tip}</>");
             }
+
+            if (null !== $errorIdentifier) {
+                $output->writeLineFormatted("  <fg=default>🪪  {$errorIdentifier}</>");
+            }
+
             $output->writeLineFormatted("  at <fg=cyan>{$relativeFilePath}</>:<fg=cyan>{$line}</>");
+
             if (\is_string($this->editorUrl)) {
                 $output->writeLineFormatted('  ✏️  '.str_replace(['%file%', '%line%'], [$error->getTraitFilePath() ?? $error->getFilePath(), (string) $error->getLine()], $this->editorUrl));
             }
+
             $output->writeLineFormatted($codeSnippet);
             $output->writeLineFormatted('');
         }
@@ -102,6 +112,28 @@ class FriendlyErrorFormatter implements ErrorFormatter
         }
     }
 
+    private function writeGroupedErrorsSummary(AnalysisResult $analysisResult, Output $output): void
+    {
+        /** @var array<string, int> $errorCounter */
+        $errorCounter = [];
+
+        foreach ($analysisResult->getFileSpecificErrors() as $error) {
+            $identifier = $error->getIdentifier() ?? 'unknown';
+            if (!array_key_exists($identifier, $errorCounter)) {
+                $errorCounter[$identifier] = 0;
+            }
+            $errorCounter[$identifier]++;
+        }
+
+        arsort($errorCounter);
+
+        $output->writeLineFormatted('<fg=red;options=bold>Error Identifier Summary:</>');
+
+        foreach ($errorCounter as $identifier => $count) {
+            $output->writeLineFormatted(sprintf('  %d  %s', $count, $identifier));
+        }
+    }
+
     private function writeFinalMessage(AnalysisResult $analysisResult, Output $output): void
     {
         $warningsCount = \count($analysisResult->getWarnings());
@@ -118,10 +150,7 @@ class FriendlyErrorFormatter implements ErrorFormatter
         }
     }
 
-    /**
-     * @return null|string
-     */
-    private function getFormattedTip(Error $error)
+    private function getFormattedTip(Error $error): ?string
     {
         $tip = $error->getTip();
 

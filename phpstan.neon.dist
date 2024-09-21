@@ -5,7 +5,7 @@ includes:
     - vendor/phpstan/phpstan-phpunit/rules.neon
 
 parameters:
-    level: 8
+    level: 9
     paths:
         - src
         - tests
@@ -38,6 +38,6 @@ parameters:
             path: src/CodeHighlighter.php
 
     friendly:
-        lineBefore: 3
-        lineAfter: 3
+        lineBefore: 2
+        lineAfter: 2
         editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
