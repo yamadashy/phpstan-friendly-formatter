@@ -9,7 +9,7 @@ use PHP_Parallel_Lint\PhpConsoleHighlighter\Highlighter;
 
 class CodeHighlighter
 {
-    /** @var Highlighter|OldHighlighter */
+    /** @var FallbackHighlighter|Highlighter|OldHighlighter */
     private $highlighter;
 
     public function __construct()
@@ -28,6 +28,9 @@ class CodeHighlighter
             // Support Highlighter and ConsoleColor < 1.0.
             $colors = new OldConsoleColor();
             $this->highlighter = new OldHighlighter($colors);
+        } else {
+            // Fallback to non-highlighted output
+            $this->highlighter = new FallbackHighlighter();
         }
     }
 
