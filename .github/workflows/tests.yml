@@ -1,4 +1,5 @@
 name: Tests
+
 on:
   pull_request:
     branches: [ main ]
@@ -7,62 +8,65 @@ on:
   workflow_dispatch:
 
 jobs:
-  analysis:
-    name: '[analysis] PHP ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
+  lint:
+    name: 'PHP Lint ${{ matrix.php-version }}'
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
-        php-version: ['8.2']
-
+        php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup PHP ${{ matrix.php-version }}
+      - uses: actions/checkout@v4
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: composer:v2
-          coverage: none
-
-      - name: Install dependencies
-        run: composer update --no-interaction --no-progress --ansi
-
       - name: Run lint
         run: find ./src ./tests -type f -name "*.php" -print0 | xargs -0 -P10 -n1 -- php -l
 
+  php_cs_fixer:
+    name: 'PHP CS Fixer'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --ansi
       - name: Run coding standards check
         run: composer run cs-fix-dry
 
+  phpstan:
+    name: 'PHPStan'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - name: Install dependencies
+        run: composer update --no-interaction --no-progress --ansi
       - name: Run static analysis
         run: composer run analyze
 
-  test:
-    name: '[test] PHP ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
+  unit_tests:
+    name: 'Unit Test ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         php-version: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3']
         dependency-version: [prefer-lowest, prefer-stable]
-
     steps:
-      - name: Git Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup PHP ${{ matrix.php-version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: none
-
       - name: Install dependencies
         run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
-
-      - name: Run lint
-        run: find ./src ./tests -type f -name "*.php" -print0 | xargs -0 -P10 -n1 -- php -l
-
-      - name: Run unit test
+      - name: Run unit tests
         run: composer run test
