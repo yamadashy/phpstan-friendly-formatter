@@ -36,9 +36,10 @@ includes:
     - ./vendor/yamadashy/phpstan-friendly-formatter/extension.neon
 ```
 
-3. Finaly, use phpstan console command with `--error-format` option:
-```shell
-./vendor/bin/phpstan analyze --error-format friendly
+3. Finally, set the `errorFormat` parameter:
+```neon
+parameters:
+    errorFormat: friendly
 ```
 
 ### Optional: Simplify Your Workflow
