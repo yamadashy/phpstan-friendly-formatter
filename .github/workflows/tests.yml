@@ -27,10 +27,10 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --no-interaction --no-progress --ansi
+        run: composer update --no-interaction --no-progress --ansi
 
       - name: Run lint
-        run: find ./src ./tests -name "*.php" | xargs -P10 -n1 php -l
+        run: find ./src ./tests -type f -name "*.php" -print0 | xargs -0 -P10 -n1 -- php -l
 
       - name: Run coding standards check
         run: composer run cs-fix-dry
@@ -62,7 +62,7 @@ jobs:
         run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
 
       - name: Run lint
-        run: find ./src ./tests -name "*.php" | xargs -P10 -n1 php -l
+        run: find ./src ./tests -type f -name "*.php" -print0 | xargs -0 -P10 -n1 -- php -l
 
       - name: Run unit test
         run: composer run test
