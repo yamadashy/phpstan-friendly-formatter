@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/php:8.2
+FROM mcr.microsoft.com/vscode/devcontainers/php:8.3
 
 # PHP memory limit
 RUN echo "memory_limit=768M" > /usr/local/etc/php/php.ini
