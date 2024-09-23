@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Yamadashy\PhpStanFriendlyFormatter;
-
-use PHP_Parallel_Lint\PhpConsoleHighlighter\Highlighter;
+namespace Yamadashy\PhpStanFriendlyFormatter\CodeHighlight;
 
 /**
  * @see Highlighter

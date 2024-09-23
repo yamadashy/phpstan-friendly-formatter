@@ -51,6 +51,17 @@ jobs:
       - name: Run static analysis
         run: composer run analyze
 
+  typos:
+    name: "Check for typos"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Check for typos"
+        uses: "crate-ci/typos@v1.24.5"
+
   unit_tests:
     name: 'Unit Test ${{ matrix.php-version }}, ${{ matrix.dependency-version }}'
     runs-on: ubuntu-latest

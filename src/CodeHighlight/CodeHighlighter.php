@@ -1,15 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace Yamadashy\PhpStanFriendlyFormatter;
+namespace Yamadashy\PhpStanFriendlyFormatter\CodeHighlight;
 
-use JakubOnderka\PhpConsoleColor\ConsoleColor as OldConsoleColor;
-use JakubOnderka\PhpConsoleHighlighter\Highlighter as OldHighlighter;
+use JakubOnderka\PhpConsoleColor\ConsoleColor as LegacyConsoleColor;
+use JakubOnderka\PhpConsoleHighlighter\Highlighter as LegacyHighlighter;
 use PHP_Parallel_Lint\PhpConsoleColor\ConsoleColor;
 use PHP_Parallel_Lint\PhpConsoleHighlighter\Highlighter;
 
 class CodeHighlighter
 {
-    /** @var FallbackHighlighter|Highlighter|OldHighlighter */
+    /**
+     * @var FallbackHighlighter|Highlighter|LegacyHighlighter
+     *
+     * @phpstan-ignore class.notFound
+     */
     private $highlighter;
 
     public function __construct()
@@ -26,8 +30,8 @@ class CodeHighlighter
             && class_exists('\JakubOnderka\PhpConsoleColor\ConsoleColor')
         ) {
             // Support Highlighter and ConsoleColor < 1.0.
-            $colors = new OldConsoleColor();
-            $this->highlighter = new OldHighlighter($colors);
+            $colors = new LegacyConsoleColor();
+            $this->highlighter = new LegacyHighlighter($colors);
         } else {
             // Fallback to non-highlighted output
             $this->highlighter = new FallbackHighlighter();
@@ -36,6 +40,7 @@ class CodeHighlighter
 
     public function highlight(string $fileContent, int $lineNumber, int $lineBefore, int $lineAfter): string
     {
+        /** @phpstan-ignore class.notFound */
         $content = $this->highlighter->getCodeSnippet(
             $fileContent,
             $lineNumber,
