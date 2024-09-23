@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Tests;
+namespace Tests\CodeHighlight;
 
 use PHPUnit\Framework\TestCase;
 use Tests\TestUtils\StringUtil;
-use Yamadashy\PhpStanFriendlyFormatter\CodeHighlighter;
+use Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter;
 
 /**
  * @internal
@@ -19,7 +19,7 @@ final class CodeHighlighterTest extends TestCase
     public static function provideHighlightCases(): iterable
     {
         yield 'show 3 lines before and after' => [
-            __DIR__.'/data/AnalysisTargetFoo.php',
+            __DIR__.'/../data/AnalysisTargetFoo.php',
             11,
             3,
             3,
@@ -33,7 +33,7 @@ final class CodeHighlighterTest extends TestCase
         ];
 
         yield 'show 5 lines before' => [
-            __DIR__.'/data/AnalysisTargetFoo.php',
+            __DIR__.'/../data/AnalysisTargetFoo.php',
             11,
             5,
             3,
@@ -49,7 +49,7 @@ final class CodeHighlighterTest extends TestCase
         ];
 
         yield 'show 6 lines after' => [
-            __DIR__.'/data/AnalysisTargetFoo.php',
+            __DIR__.'/../data/AnalysisTargetFoo.php',
             11,
             3,
             6,
@@ -66,7 +66,7 @@ final class CodeHighlighterTest extends TestCase
         ];
 
         yield 'show 1 line only' => [
-            __DIR__.'/data/AnalysisTargetFoo.php',
+            __DIR__.'/../data/AnalysisTargetFoo.php',
             11,
             0,
             0,
@@ -74,7 +74,7 @@ final class CodeHighlighterTest extends TestCase
         ];
 
         yield 'show 1 line of Bar' => [
-            __DIR__.'/data/AnalysisTargetBar.php',
+            __DIR__.'/../data/AnalysisTargetBar.php',
             13,
             0,
             0,
