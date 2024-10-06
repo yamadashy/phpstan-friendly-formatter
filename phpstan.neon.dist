@@ -1,18 +1,16 @@
 includes:
     - extension.neon
-    - vendor/grifart/phpstan-oneline/config.neon
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
 
 parameters:
-    level: 9
+    level: 10
     paths:
         - src
         - tests
 
     excludePaths:
         - tests/data/
-        - tests/Abstracts/
 
     checkUninitializedProperties: true
     checkMissingCallableSignature: true

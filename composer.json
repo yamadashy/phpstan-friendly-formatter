@@ -13,12 +13,11 @@
     "require": {
         "php": "^7.2 || ^8.0",
         "php-parallel-lint/php-console-highlighter": "^0.3 || ^0.4 || ^0.5 || ^1.0",
-        "phpstan/phpstan": "^0.12 || ^1.0"
+        "phpstan/phpstan": "^0.12 || ^1.0 || ^2.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.4.0",
-        "grifart/phpstan-oneline": "^0.4.2",
-        "phpstan/phpstan-phpunit": "^0.12.22 || ^1.0",
+        "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^8.5.26 || ^10.0.0"
     },
     "minimum-stability": "dev",
@@ -52,7 +51,6 @@
         "analyze": "phpstan analyze -c phpstan.neon.dist --error-format friendly",
         "analyze-raw": "phpstan analyze -c phpstan.neon.dist --error-format raw",
         "analyze-table": "phpstan analyze -c phpstan.neon.dist --error-format table",
-        "analyze-oneline": "phpstan analyze -c phpstan.neon.dist --error-format oneline",
         "cs-fix": "php-cs-fixer fix",
         "cs-fix-dry": "php-cs-fixer fix --dry-run"
     }
