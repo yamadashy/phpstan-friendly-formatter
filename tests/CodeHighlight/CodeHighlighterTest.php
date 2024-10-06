@@ -9,7 +9,7 @@ use Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter;
 /**
  * @internal
  *
- * @coversDefaultClass \Yamadashy\PhpStanFriendlyFormatter\CodeHighlighter
+ * @coversDefaultClass \Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter
  */
 final class CodeHighlighterTest extends TestCase
 {
