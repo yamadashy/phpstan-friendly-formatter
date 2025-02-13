@@ -6,6 +6,8 @@ use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
+use PHPStan\File\SimpleRelativePathHelper;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter;
 use Yamadashy\PhpStanFriendlyFormatter\Config\FriendlyFormatterConfig;
 
@@ -14,14 +16,19 @@ class ErrorWriter
     /** @var RelativePathHelper */
     private $relativePathHelper;
 
+    /** @var SimpleRelativePathHelper */
+    private $simpleRelativePathHelper;
+
     /** @var FriendlyFormatterConfig */
     private $config;
 
     public function __construct(
         RelativePathHelper $relativePathHelper,
+        SimpleRelativePathHelper $simpleRelativePathHelper,
         FriendlyFormatterConfig $config
     ) {
         $this->relativePathHelper = $relativePathHelper;
+        $this->simpleRelativePathHelper = $simpleRelativePathHelper;
         $this->config = $config;
     }
 
@@ -72,7 +79,11 @@ class ErrorWriter
                 }
 
                 if (\is_string($this->config->editorUrl)) {
-                    $output->writeLineFormatted('  ✏️  '.str_replace(['%file%', '%line%'], [$error->getTraitFilePath() ?? $error->getFilePath(), (string) $error->getLine()], $this->config->editorUrl));
+                    $output->writeLineFormatted('  ✏️  <href='.OutputFormatter::escape(str_replace(
+                        ['%file%', '%relFile%', '%line%'],
+                        [$filePath, $this->simpleRelativePathHelper->getRelativePath($filePath), (string) $error->getLine()],
+                        $this->config->editorUrl,
+                    )).'>'.$relativeFilePath.'</>');
                 }
 
                 $output->writeLineFormatted($codeSnippet);
