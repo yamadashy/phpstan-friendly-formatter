@@ -79,9 +79,17 @@ class ErrorWriter
                 }
 
                 if (\is_string($this->config->editorUrl)) {
+                    /**
+                     * SimpleRelativePathHelper is not covered by PHPStan's backward compatibility promise.
+                     *
+                     * @see https://phpstan.org/developing-extensions/backward-compatibility-promise
+                     *
+                     * @phpstan-ignore-next-line phpstanApi.method
+                     */
+                    $relFile = $this->simpleRelativePathHelper->getRelativePath($filePath);
                     $output->writeLineFormatted('  ✏️  <href='.OutputFormatter::escape(str_replace(
                         ['%file%', '%relFile%', '%line%'],
-                        [$filePath, $this->simpleRelativePathHelper->getRelativePath($filePath), (string) $error->getLine()],
+                        [$filePath, $relFile, (string) $error->getLine()],
                         $this->config->editorUrl,
                     )).'>'.$relativeFilePath.'</>');
                 }

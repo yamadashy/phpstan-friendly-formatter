@@ -6,6 +6,7 @@ use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
 use PHPStan\File\FuzzyRelativePathHelper;
 use PHPStan\File\NullRelativePathHelper;
+use PHPStan\File\SimpleRelativePathHelper;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Testing\ErrorFormatterTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -31,7 +32,8 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         array $expectedOutputSubstrings
     ): void {
         $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
-        $formatter = new FriendlyErrorFormatter($relativePathHelper, 3, 3, null);
+        $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, 3, 3, null);
         $dummyAnalysisResult = $this->getDummyAnalysisResult($numFileErrors, $numGenericErrors, $numWarnings);
 
         $exitCode = $formatter->formatErrors($dummyAnalysisResult, $this->getOutput());
