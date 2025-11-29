@@ -51,6 +51,7 @@
         "analyze": "phpstan analyze -c phpstan.neon.dist --error-format friendly",
         "analyze-raw": "phpstan analyze -c phpstan.neon.dist --error-format raw",
         "analyze-table": "phpstan analyze -c phpstan.neon.dist --error-format table",
+        "playground": "phpstan analyze playground -c playground/phpstan.neon --error-format friendly",
         "cs-fix": "php-cs-fixer fix",
         "cs-fix-dry": "php-cs-fixer fix --dry-run"
     }

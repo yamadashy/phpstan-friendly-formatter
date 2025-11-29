@@ -2,7 +2,8 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->exclude([
-        'tests/data'
+        'tests/data',
+        'playground',
     ])
     ->in(__DIR__);
 

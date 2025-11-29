@@ -38,3 +38,7 @@ parameters:
     friendly:
         lineBefore: 2
         lineAfter: 2
+        # editorUrl examples:
+        # - PhpStorm: 'phpstorm://open?file=%%relFile%%&line=%%line%%'
+        # - VSCode (local): 'vscode://file//path/to/project/%%relFile%%:%%line%%'
+        editorUrl: null

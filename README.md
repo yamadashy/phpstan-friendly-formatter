@@ -64,16 +64,38 @@ You can customize in your `phpstan.neon`:
 ```neon
 parameters:
     friendly:
-        # default is 3
-        lineBefore: 3
-        lineAfter: 3
-        # default is null
-        editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+        lineBefore: 3  # Number of lines to display before error line (default: 2)
+        lineAfter: 3   # Number of lines to display after error line (default: 2)
+        editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'  # Editor URL (default: null)
 ```
 
-- `lineBefore` ... Number of lines to display before error line
-- `lineAfter` ... Number of lines to display after error line
-- `editorUrl` ... URL with placeholders like [table formatter config](URL for editor like table formatter)
+### Editor URL Configuration
+
+The `editorUrl` option allows you to create clickable links in terminal output that open files directly in your editor.
+
+**Available placeholders:**
+- `%%file%%` - Absolute file path
+- `%%relFile%%` - Relative file path (useful for Docker/container environments)
+- `%%line%%` - Line number
+
+**Editor examples:**
+```neon
+parameters:
+    friendly:
+        # PhpStorm / IntelliJ IDEA
+        editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+
+        # VSCode (with absolute path)
+        editorUrl: 'vscode://file/%%file%%:%%line%%'
+
+        # VSCode (with relative path - for Docker environments, requires base path)
+        editorUrl: 'vscode://file//your/local/project/path/%%relFile%%:%%line%%'
+
+        # Sublime Text
+        editorUrl: 'subl://open?url=file://%%file%%&line=%%line%%'
+```
+
+> **Note:** When running PHPStan in Docker or other virtualized environments, use `%%relFile%%` instead of `%%file%%` to get the relative path. For VSCode, you may need to prepend your local project path since VSCode requires absolute paths.
 
 
 ## 🖼️ Example
