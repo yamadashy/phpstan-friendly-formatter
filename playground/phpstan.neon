@@ -1,0 +1,16 @@
+# PHPStan configuration for playground
+# Usage: cd playground && ../vendor/bin/phpstan analyze
+
+includes:
+    - ../extension.neon
+
+parameters:
+    level: 9
+    paths:
+        - .
+
+    # Friendly formatter settings
+    friendly:
+        lineBefore: 3
+        lineAfter: 3
+        editorUrl: 'vscode://file/%%relFile%%:%%line%%'
