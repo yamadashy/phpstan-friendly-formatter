@@ -25,7 +25,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   nano \
   vim \
+  ca-certificates \
+  curl \
+  lsb-release \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP 8.4 from Sury repository
+RUN curl -sSL https://packages.sury.org/php/README.txt | bash -x && \
+  apt-get update && apt-get install -y --no-install-recommends \
+  php8.4-cli \
+  php8.4-mbstring \
+  php8.4-xml \
+  php8.4-curl \
+  php8.4-zip \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
