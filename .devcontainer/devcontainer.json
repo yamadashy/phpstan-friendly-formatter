@@ -9,10 +9,6 @@
       "ZSH_IN_DOCKER_VERSION": "1.2.0"
     }
   },
-  "runArgs": [
-    "--cap-add=NET_ADMIN",
-    "--cap-add=NET_RAW"
-  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -45,7 +41,6 @@
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh && composer install",
-  "waitFor": "postStartCommand"
+  "postStartCommand": "composer install"
 }
 
