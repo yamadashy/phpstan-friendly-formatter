@@ -19,6 +19,34 @@ use Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter;
 final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 {
     /**
+     * @dataProvider provideFormatErrorsCases
+     *
+     * @param list<string> $expectedOutputSubstrings
+     *
+     * @covers ::formatErrors
+     */
+    public function testFormatErrors(
+        int $expectedExitCode,
+        int $numFileErrors,
+        int $numGenericErrors,
+        int $numWarnings,
+        array $expectedOutputSubstrings
+    ): void {
+        $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, 3, 3, null);
+        $dummyAnalysisResult = $this->getDummyAnalysisResult($numFileErrors, $numGenericErrors, $numWarnings);
+
+        $exitCode = $formatter->formatErrors($dummyAnalysisResult, $this->getOutput());
+        $outputContent = StringUtil::escapeTextColors($this->getOutputContent());
+        $outputContent = StringUtil::rtrimByLines($outputContent);
+
+        self::assertSame($expectedExitCode, $exitCode);
+        foreach ($expectedOutputSubstrings as $expectedOutputSubstring) {
+            self::assertStringContainsString($expectedOutputSubstring, $outputContent);
+        }
+    }
+
+    /**
      * @return \Generator<string, (int|list<string>)[], void, void>
      */
     public static function provideFormatErrorsCases(): iterable
@@ -162,34 +190,6 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
                 '[ERROR] Found 4 errors and 2 warnings',
             ],
         ];
-    }
-
-    /**
-     * @dataProvider provideFormatErrorsCases
-     *
-     * @param list<string> $expectedOutputSubstrings
-     *
-     * @covers ::formatErrors
-     */
-    public function testFormatErrors(
-        int $expectedExitCode,
-        int $numFileErrors,
-        int $numGenericErrors,
-        int $numWarnings,
-        array $expectedOutputSubstrings
-    ): void {
-        $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
-        $formatter = new FriendlyErrorFormatter($relativePathHelper, 3, 3, null);
-        $dummyAnalysisResult = $this->getDummyAnalysisResult($numFileErrors, $numGenericErrors, $numWarnings);
-
-        $exitCode = $formatter->formatErrors($dummyAnalysisResult, $this->getOutput());
-        $outputContent = StringUtil::escapeTextColors($this->getOutputContent());
-        $outputContent = StringUtil::rtrimByLines($outputContent);
-
-        self::assertSame($expectedExitCode, $exitCode);
-        foreach ($expectedOutputSubstrings as $expectedOutputSubstring) {
-            self::assertStringContainsString($expectedOutputSubstring, $outputContent);
-        }
     }
 
     /**

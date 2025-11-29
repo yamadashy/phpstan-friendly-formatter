@@ -14,6 +14,29 @@ use Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter;
 final class CodeHighlighterTest extends TestCase
 {
     /**
+     * @dataProvider provideHighlightCases
+     *
+     * @covers ::highlight
+     */
+    public function testHighlight(
+        string $filePath,
+        int $lineNumber,
+        int $lineBefore,
+        int $lineAfter,
+        string $expectedOutput
+    ): void {
+        $codeHighlighter = new CodeHighlighter();
+
+        $fileContent = (string) file_get_contents($filePath);
+
+        $output = $codeHighlighter->highlight($fileContent, $lineNumber, $lineBefore, $lineAfter);
+        $output = StringUtil::escapeTextColors($output);
+        $output = StringUtil::rtrimByLines($output);
+
+        self::assertSame($expectedOutput, $output);
+    }
+
+    /**
      * @return \Generator<string, (int|string)[], void, void>
      */
     public static function provideHighlightCases(): iterable
@@ -80,28 +103,5 @@ final class CodeHighlighterTest extends TestCase
             0,
             '  > 13|         return 2;',
         ];
-    }
-
-    /**
-     * @dataProvider provideHighlightCases
-     *
-     * @covers ::highlight
-     */
-    public function testHighlight(
-        string $filePath,
-        int $lineNumber,
-        int $lineBefore,
-        int $lineAfter,
-        string $expectedOutput
-    ): void {
-        $codeHighlighter = new CodeHighlighter();
-
-        $fileContent = (string) file_get_contents($filePath);
-
-        $output = $codeHighlighter->highlight($fileContent, $lineNumber, $lineBefore, $lineAfter);
-        $output = StringUtil::escapeTextColors($output);
-        $output = StringUtil::rtrimByLines($output);
-
-        self::assertSame($expectedOutput, $output);
     }
 }
