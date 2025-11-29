@@ -38,7 +38,7 @@ src/
 - `phpstan.neon.dist` - PHPStan config (level 10, paths, formatter settings)
 - `extension.neon` - PHPStan extension registration and parameter schema
 - `.php-cs-fixer.dist.php` - Code style rules
-- `phpunit.xml` - PHPUnit 11 config
+- `phpunit.xml` - PHPUnit 10/11 compatible config
 - `.tool-versions` - PHP version for local dev and CI (used by `php-version-file` in GitHub Actions)
 
 ## Compatibility
