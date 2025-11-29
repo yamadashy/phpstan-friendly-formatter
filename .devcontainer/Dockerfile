@@ -25,14 +25,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   lsb-release \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP 8.4 from Sury repository
+# Install PHP 8.5 from Sury repository
 RUN curl -sSL https://packages.sury.org/php/README.txt | bash -x && \
   apt-get update && apt-get install -y --no-install-recommends \
-  php8.4-cli \
-  php8.4-mbstring \
-  php8.4-xml \
-  php8.4-curl \
-  php8.4-zip \
+  php8.5-cli \
+  php8.5-mbstring \
+  php8.5-xml \
+  php8.5-curl \
+  php8.5-zip \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
