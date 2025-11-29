@@ -7,6 +7,7 @@ use PHPStan\Command\AnalysisResult;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
+use PHPStan\File\SimpleRelativePathHelper;
 use Yamadashy\PhpStanFriendlyFormatter\Config\FriendlyFormatterConfig;
 use Yamadashy\PhpStanFriendlyFormatter\ErrorFormat\ErrorWriter;
 use Yamadashy\PhpStanFriendlyFormatter\ErrorFormat\SummaryWriter;
@@ -16,12 +17,21 @@ class FriendlyErrorFormatter implements ErrorFormatter
     /** @var RelativePathHelper */
     private $relativePathHelper;
 
+    /** @var SimpleRelativePathHelper */
+    private $simpleRelativePathHelper;
+
     /** @var FriendlyFormatterConfig */
     private $config;
 
-    public function __construct(RelativePathHelper $relativePathHelper, int $lineBefore, int $lineAfter, ?string $editorUrl)
-    {
+    public function __construct(
+        RelativePathHelper $relativePathHelper,
+        SimpleRelativePathHelper $simpleRelativePathHelper,
+        int $lineBefore,
+        int $lineAfter,
+        ?string $editorUrl
+    ) {
         $this->relativePathHelper = $relativePathHelper;
+        $this->simpleRelativePathHelper = $simpleRelativePathHelper;
         $this->config = new FriendlyFormatterConfig(
             $lineBefore,
             $lineAfter,
@@ -40,7 +50,7 @@ class FriendlyErrorFormatter implements ErrorFormatter
 
         $output->writeLineFormatted('');
 
-        $errorWriter = new ErrorWriter($this->relativePathHelper, $this->config);
+        $errorWriter = new ErrorWriter($this->relativePathHelper, $this->simpleRelativePathHelper, $this->config);
         $errorWriter->writeFileSpecificErrors($analysisResult, $output);
         $errorWriter->writeNotFileSpecificErrors($analysisResult, $output);
         $errorWriter->writeWarnings($analysisResult, $output);
