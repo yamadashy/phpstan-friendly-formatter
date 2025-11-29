@@ -8,23 +8,21 @@ use PHPStan\File\FuzzyRelativePathHelper;
 use PHPStan\File\NullRelativePathHelper;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Testing\ErrorFormatterTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestUtils\StringUtil;
 use Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter;
 
 /**
  * @internal
- *
- * @coversDefaultClass \Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter
  */
+#[CoversClass(FriendlyErrorFormatter::class)]
 final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 {
     /**
-     * @dataProvider provideFormatErrorsCases
-     *
      * @param list<string> $expectedOutputSubstrings
-     *
-     * @covers ::formatErrors
      */
+    #[DataProvider('provideFormatErrorsCases')]
     public function testFormatErrors(
         int $expectedExitCode,
         int $numFileErrors,

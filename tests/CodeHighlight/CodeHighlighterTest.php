@@ -2,22 +2,19 @@
 
 namespace Tests\CodeHighlight;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tests\TestUtils\StringUtil;
 use Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter;
 
 /**
  * @internal
- *
- * @coversDefaultClass \Yamadashy\PhpStanFriendlyFormatter\CodeHighlight\CodeHighlighter
  */
+#[CoversClass(CodeHighlighter::class)]
 final class CodeHighlighterTest extends TestCase
 {
-    /**
-     * @dataProvider provideHighlightCases
-     *
-     * @covers ::highlight
-     */
+    #[DataProvider('provideHighlightCases')]
     public function testHighlight(
         string $filePath,
         int $lineNumber,
