@@ -48,3 +48,4 @@
   "postStartCommand": "sudo /usr/local/bin/init-firewall.sh && composer install",
   "waitFor": "postStartCommand"
 }
+
