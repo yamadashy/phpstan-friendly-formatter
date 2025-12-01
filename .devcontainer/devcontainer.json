@@ -31,8 +31,9 @@
   },
   "remoteUser": "node",
   "mounts": [
-    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
-    "source=claude-code-config-${devcontainerId},target=/home/node/.claude,type=volume"
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
+    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind",
+    "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume"
   ],
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
