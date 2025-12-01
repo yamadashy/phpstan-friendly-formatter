@@ -4,7 +4,7 @@
     "config:recommended",
     'group:allNonMajor'
   ],
-  "schedule": ["on saturday"],
+  "schedule": ["before 9am on saturday"],
   "rangeStrategy": "bump",
   "dependencyDashboard": false,
   "labels": ["dependencies", "renovate"],
