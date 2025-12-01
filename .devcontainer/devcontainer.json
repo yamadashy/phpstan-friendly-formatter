@@ -1,5 +1,5 @@
 {
-  "name": "Claude Code Sandbox",
+  "name": "PHPStan Friendly Formatter Dev",
   "build": {
     "dockerfile": "Dockerfile",
     "args": {
