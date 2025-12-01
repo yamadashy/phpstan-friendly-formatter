@@ -15,6 +15,7 @@ services:
     errorFormatter.friendly:
         class: Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter
         arguments:
+            relativePathHelper: @relativePathHelper
             simpleRelativePathHelper: @simpleRelativePathHelper
             lineBefore: %friendly.lineBefore%
             lineAfter: %friendly.lineAfter%
