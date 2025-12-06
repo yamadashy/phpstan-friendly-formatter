@@ -16,5 +16,6 @@
   ],
   "ignoreDeps": [
     "node",
+    "php",
   ]
 }
