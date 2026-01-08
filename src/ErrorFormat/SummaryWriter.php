@@ -8,6 +8,7 @@ use PHPStan\Command\Output;
 class SummaryWriter
 {
     private const IDENTIFIER_NO_IDENTIFIER = '<no-identifier>';
+    private const IDENTIFIER_IGNORE_UNMATCHED = 'ignore.unmatched';
 
     public function writeGroupedErrorsSummary(AnalysisResult $analysisResult, Output $output): void
     {
@@ -44,8 +45,9 @@ class SummaryWriter
 
         foreach ($errorCounter as $identifier => $count) {
             $fileCount = \count($files[$identifier]);
-            $suffix = 1 === $fileCount ? 'file' : 'files';
-            $color = 'ignore.unmatched' === $identifier ? 'green' : 'red';
+            $suffix = $this->getFileSuffix($fileCount);
+            $color = self::IDENTIFIER_IGNORE_UNMATCHED === $identifier ? 'green' : 'red';
+
             $output->writeLineFormatted(\sprintf(
                 "  <fg={$color}>%d</>  <fg=yellow>%s</> (in <fg={$color}>%d</> %s)",
                 $count,
@@ -56,32 +58,36 @@ class SummaryWriter
         }
 
         $totalFileCount = \count($uniqueFiles);
-        $suffix = 1 === $totalFileCount ? 'file' : 'files';
-
+        $suffix = $this->getFileSuffix($totalFileCount);
         $output->writeLineFormatted('');
         $output->writeLineFormatted('📊 Summary:');
         $output->writeLineFormatted('───────────');
 
-        $output->writeLineFormatted("❌ Found <fg=red>{$analysisResult->getTotalErrorsCount()}</> errors");
-        $output->writeLineFormatted('🏷️  In <fg=red>'.\count($errorCounter).'</> error categories');
-        $output->writeLineFormatted("📂 Across <fg=red>{$totalFileCount}</> {$suffix}");
+        $output->writeLineFormatted(\sprintf('❌ Found <fg=red>%d</> errors', $analysisResult->getTotalErrorsCount()));
+        $output->writeLineFormatted(\sprintf('🏷️  In <fg=red>%d</> error categories', \count($errorCounter)));
+        $output->writeLineFormatted(\sprintf('📂 Across <fg=red>%d</> %s', $totalFileCount, $suffix));
 
-        if (isset($errorCounter['ignore.unmatched']) || isset($errorCounter[self::IDENTIFIER_NO_IDENTIFIER]) || 0 !== $nonignorableCounter) {
+        if (isset($errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED]) || isset($errorCounter[self::IDENTIFIER_NO_IDENTIFIER]) || 0 !== $nonignorableCounter) {
             $output->writeLineFormatted('');
             $output->writeLineFormatted('ℹ️  Note:');
             $output->writeLineFormatted('────────');
         }
 
-        if (isset($errorCounter['ignore.unmatched'])) {
-            $output->writeLineFormatted("🎉 <fg=green>{$errorCounter['ignore.unmatched']}</> errors can be removed after updating the baseline.");
+        if (isset($errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED])) {
+            $output->writeLineFormatted(\sprintf('🎉 <fg=green>%d</> errors can be removed after updating the baseline.', $errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED]));
         }
 
         if (isset($errorCounter[self::IDENTIFIER_NO_IDENTIFIER])) {
-            $output->writeLineFormatted("⚠️  <fg=yellow>{$errorCounter[self::IDENTIFIER_NO_IDENTIFIER]}</> errors have no identifier. Consider upgrading to PHPStan v2, which requires identifiers.");
+            $output->writeLineFormatted(\sprintf('⚠️  <fg=yellow>%d</> errors have no identifier. Consider upgrading to PHPStan v2, which requires identifiers.', $errorCounter[self::IDENTIFIER_NO_IDENTIFIER]));
         }
 
         if (0 !== $nonignorableCounter) {
-            $output->writeLineFormatted("🚨 <fg=red>{$nonignorableCounter}</> errors cannot be ignored by baseline!");
+            $output->writeLineFormatted(\sprintf('🚨 <fg=red>%d</> errors cannot be ignored by baseline!', $nonignorableCounter));
         }
+    }
+
+    private function getFileSuffix(int $count): string
+    {
+        return 1 === $count ? 'file' : 'files';
     }
 }
