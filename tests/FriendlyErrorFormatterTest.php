@@ -73,6 +73,14 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     14|     }
     15|
     16| }',
+                '📊 Error Identifier Summary:',
+                ' <no-identifier> (in 1 file)',
+                '📊 Summary:',
+                '❌ Found 1 errors',
+                '🏷️  In 1 error categories',
+                '📂 Across 1 file',
+                'ℹ️  Note:',
+                '⚠️  1 errors have no identifier. Consider upgrading to PHPStan v2, which requires identifiers.',
                 '[ERROR] Found 1 error',
             ],
         ];
@@ -192,6 +200,33 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         ];
     }
 
+    public function testDecoratedSummaryShowsColorsAndNotes(): void
+    {
+        $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
+        $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, 3, 3, null);
+
+        $fileErrors = [
+            new Error('Ignore unmatched', __DIR__.'/data/AnalysisTargetFoo.php', 13, true, null, null, null, null, null, 'ignore.unmatched'),
+            new Error('No identifier', __DIR__.'/data/AnalysisTargetFoo.php', 15),
+            new Error('Non ignorable', __DIR__.'/data/AnalysisTargetBar.php', 9, false, null, null, null, null, null, 'missingType'),
+        ];
+
+        $analysisResult = $this->createAnalysisResult($fileErrors, [], []);
+
+        $exitCode = $formatter->formatErrors($analysisResult, $this->getOutput(true));
+        $outputContent = StringUtil::rtrimByLines($this->getOutputContent(true));
+
+        self::assertSame(1, $exitCode);
+        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('green', 'ignore.unmatched'), $outputContent);
+        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('yellow', '<no-identifier>'), $outputContent);
+        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('red', 'missingType'), $outputContent);
+        self::assertStringContainsString('ℹ️  Note:', $outputContent);
+        self::assertStringContainsString('🎉', $outputContent);
+        self::assertStringContainsString('⚠️', $outputContent);
+        self::assertStringContainsString('🚨', $outputContent);
+    }
+
     /**
      * @throws ShouldNotHappenException
      */
@@ -214,6 +249,16 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
             'first warning', 'second warning',
         ], 0, $numWarnings);
 
+        return $this->createAnalysisResult($fileErrors, $genericErrors, $warnings);
+    }
+
+    /**
+     * @param list<Error>  $fileErrors
+     * @param list<string> $genericErrors
+     * @param list<string> $warnings
+     */
+    private function createAnalysisResult(array $fileErrors, array $genericErrors, array $warnings): AnalysisResult
+    {
         $reflectionMethod = new \ReflectionMethod(AnalysisResult::class, '__construct');
         $numOfParams = $reflectionMethod->getNumberOfParameters();
 
@@ -247,5 +292,34 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 
         // @phpstan-ignore-next-line
         return new AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), false);
+    }
+
+    /**
+     * Builds a regular expression pattern for matching ANSI-colored error summary lines.
+     *
+     * The pattern matches lines that contain a colored count of errors or warnings,
+     * a colored identifier (such as "errors" or "warnings"), and a colored file count
+     * in parentheses, using the same ANSI escape sequences as produced by the formatter.
+     *
+     * @param string $colorCode  One of the keys of the internal ANSI color map (e.g. 'green', 'yellow', 'red').
+     * @param string $identifier the text identifier to match (for example "errors" or "warnings")
+     * @param int    $count      the expected number of errors or warnings to appear in the summary
+     * @param int    $fileCount  the expected number of files to appear in the summary
+     *
+     * @return string regular expression pattern for matching the formatted summary line
+     */
+    private function buildErrorSummaryPattern(string $colorCode, string $identifier, int $count = 1, int $fileCount = 1): string
+    {
+        $ansiColorCodes = [
+            'green' => '\x1b\[32m',
+            'yellow' => '\x1b\[33m',
+            'red' => '\x1b\[31m',
+        ];
+        $colorPattern = $ansiColorCodes[$colorCode];
+        $identifierColorPattern = '\x1b\[33m';
+        $resetPattern = '\x1b\[[0-9;]*m';
+        $escapedIdentifier = preg_quote($identifier, '/');
+
+        return "/{$colorPattern}{$count}{$resetPattern}\\s+{$identifierColorPattern}{$escapedIdentifier}{$resetPattern} \\(in {$colorPattern}{$fileCount}{$resetPattern} files?\\)/";
     }
 }
