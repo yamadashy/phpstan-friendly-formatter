@@ -4,6 +4,9 @@ namespace Tests;
 
 use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
+use PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter;
+use PHPStan\Command\ErrorFormatter\GithubErrorFormatter;
+use PHPStan\Command\ErrorFormatter\TeamcityErrorFormatter;
 use PHPStan\File\FuzzyRelativePathHelper;
 use PHPStan\File\NullRelativePathHelper;
 use PHPStan\File\SimpleRelativePathHelper;
@@ -33,7 +36,8 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     ): void {
         $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
         $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
-        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, 3, 3, null);
+        $ciDetectedErrorFormatter = new CiDetectedErrorFormatter(new GithubErrorFormatter($relativePathHelper), new TeamcityErrorFormatter($relativePathHelper));
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, $ciDetectedErrorFormatter, 3, 3, null);
         $dummyAnalysisResult = $this->getDummyAnalysisResult($numFileErrors, $numGenericErrors, $numWarnings);
 
         $exitCode = $formatter->formatErrors($dummyAnalysisResult, $this->getOutput());
