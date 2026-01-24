@@ -1,8 +1,8 @@
+.*                      export-ignore
+/docs                   export-ignore
+/playground             export-ignore
 /tests                  export-ignore
-/.github                export-ignore
-.editorconfig           export-ignore
-.gitattributes          export-ignore
-.gitignore              export-ignore
-phpstan.neon.dist       export-ignore
+CLAUDE.md               export-ignore
 README.md               export-ignore
-.php-cs-fixer.dist.php  export-ignore
+phpstan.neon.dist       export-ignore
+phpunit.xml             export-ignore
