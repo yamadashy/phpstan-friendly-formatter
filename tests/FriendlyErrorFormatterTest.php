@@ -73,11 +73,11 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     14|     }
     15|
     16| }',
-                '📊 Error Identifier Summary:',
-                ' <no-identifier> (in 1 file, consider upgrading to PHPStan v2)',
+                '📈 Error Identifier Summary:',
+                ' <no-identifier> (in 1 file)',
                 '📊 Summary:',
                 '❌ Found 1 errors',
-                '🏷️  In 1 error categories',
+                '🏷️ In 1 error identifiers',
                 '📂 Across 1 file',
                 '[ERROR] Found 1 error',
             ],
@@ -217,9 +217,9 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 
         self::assertSame(1, $exitCode);
         self::assertStringContainsString('ignore.unmatched (in 1 file, can be removed after baseline update)', $outputContent);
-        self::assertStringContainsString('<no-identifier> (in 1 file, consider upgrading to PHPStan v2)', $outputContent);
+        self::assertStringContainsString('<no-identifier> (in 1 file)', $outputContent);
         self::assertStringContainsString('missingType (in 1 file)', $outputContent);
-        self::assertStringContainsString('🚨 1 errors cannot be ignored by baseline', $outputContent);
+        self::assertStringContainsString('1 error cannot be ignored by baseline', $outputContent);
     }
 
     /**

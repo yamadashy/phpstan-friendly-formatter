@@ -34,7 +34,7 @@ class SummaryWriter
             $uniqueFiles[$file] = true;
 
             // Count non-ignorable errors excluding ignore.unmatched
-            if (!$error->canBeIgnored() && $identifier !== self::IDENTIFIER_IGNORE_UNMATCHED) {
+            if (!$error->canBeIgnored() && self::IDENTIFIER_IGNORE_UNMATCHED !== $identifier) {
                 ++$nonIgnorableCounter;
             }
         }
@@ -47,7 +47,7 @@ class SummaryWriter
         foreach ($errorCounter as $identifier => $count) {
             $fileCount = \count($files[$identifier]);
             $suffix = $this->getFileSuffix($fileCount);
-            $note = $identifier === self::IDENTIFIER_IGNORE_UNMATCHED
+            $note = self::IDENTIFIER_IGNORE_UNMATCHED === $identifier
                 ? ', can be removed after baseline update'
                 : '';
 
@@ -79,11 +79,11 @@ class SummaryWriter
         if ($unmatchedCount > 0) {
             $toFixCount = $totalErrors - $unmatchedCount;
             $treeItems[] = \sprintf('%d %s to fix', $toFixCount, $this->getErrorSuffix($toFixCount));
-            $treeItems[] = \sprintf('%d %s can be removed from baseline', $unmatchedCount, $this->getErrorSuffix($unmatchedCount));
+            $treeItems[] = \sprintf('%d %s can be removed after updating the baseline', $unmatchedCount, $this->getErrorSuffix($unmatchedCount));
         }
 
         if ($noIdentifierCount > 0) {
-            $treeItems[] = \sprintf('%d %s have no identifier', $noIdentifierCount, $this->getErrorSuffix($noIdentifierCount));
+            $treeItems[] = \sprintf('%d %s have no identifier, consider upgrading to PHPStan v2', $noIdentifierCount, $this->getErrorSuffix($noIdentifierCount));
         }
 
         if ($nonIgnorableCounter > 0) {
