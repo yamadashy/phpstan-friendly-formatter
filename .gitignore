@@ -7,3 +7,6 @@ composer.lock
 .php-cs-fixer.cache
 repomix-output.xml
 .DS_Store
+
+# AI
+.claude/settings.local.json
