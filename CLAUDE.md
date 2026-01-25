@@ -14,6 +14,7 @@ composer cs-fix-dry    # Check code style (dry run)
 composer cs-fix        # Fix code style issues
 composer analyze       # Run PHPStan with friendly formatter
 composer tests         # Run all: cs-fix-dry → analyze → test
+composer playground    # Run PHPStan on playground with sample errors (for testing formatter output)
 ```
 
 ## Architecture

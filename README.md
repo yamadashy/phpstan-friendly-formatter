@@ -104,5 +104,13 @@ When you actually introduce it in GitHub Actions, it will be displayed as follow
 ![PHPStan Friendly Formatter output in GitHub Actions](./docs/github-actions.png)
 https://github.com/yamadashy/laravel-blade-minify-directive/actions/runs/4714024802/jobs/8360104870
 
+## 🛠️ Development
+
+```shell
+composer test          # Run tests
+composer cs-fix        # Fix code style
+composer playground    # Test formatter output with sample errors
+```
+
 ## 📜 License
 Distributed under the [MIT license](LICENSE.md).
