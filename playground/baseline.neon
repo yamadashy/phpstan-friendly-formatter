@@ -1,0 +1,14 @@
+# Baseline file for demonstrating ignore.unmatched errors
+# These errors no longer exist in the codebase, so they will trigger "ignore.unmatched"
+
+parameters:
+    ignoreErrors:
+        # This error was "fixed" so it will show as unmatched
+        -
+            message: '#This error no longer exists in the codebase#'
+            path: type_errors.php
+
+        # Another unmatched error
+        -
+            message: '#Old error that was removed#'
+            path: dead_code.php
