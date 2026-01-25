@@ -53,7 +53,8 @@ class SummaryWriter
             };
 
             $output->writeLineFormatted(\sprintf(
-                "  <fg={$color}>%d</>  <fg=yellow>%s</> (in <fg={$color}>%d</> %s)",
+                "  <fg=%s>%d</>  <fg=yellow>%s</> <fg=gray>(in %d %s)</>",
+                $color,
                 $count,
                 $identifier,
                 $fileCount,

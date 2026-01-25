@@ -317,9 +317,10 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         ];
         $colorPattern = $ansiColorCodes[$colorCode];
         $identifierColorPattern = '\x1b\[33m';
+        $grayPattern = '\x1b\[90m';
         $resetPattern = '\x1b\[[0-9;]*m';
         $escapedIdentifier = preg_quote($identifier, '/');
 
-        return "/{$colorPattern}{$count}{$resetPattern}\\s+{$identifierColorPattern}{$escapedIdentifier}{$resetPattern} \\(in {$colorPattern}{$fileCount}{$resetPattern} files?\\)/";
+        return "/{$colorPattern}{$count}{$resetPattern}\\s+{$identifierColorPattern}{$escapedIdentifier}{$resetPattern} {$grayPattern}\\(in {$fileCount} files?\\){$resetPattern}/";
     }
 }
