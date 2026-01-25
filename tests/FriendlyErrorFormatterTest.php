@@ -74,13 +74,11 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     15|
     16| }',
                 '📊 Error Identifier Summary:',
-                ' <no-identifier> (in 1 file)',
+                ' <no-identifier> (in 1 file, consider upgrading to PHPStan v2)',
                 '📊 Summary:',
                 '❌ Found 1 errors',
                 '🏷️  In 1 error categories',
                 '📂 Across 1 file',
-                'ℹ️  Note:',
-                '⚠️  1 errors have no identifier. Consider upgrading to PHPStan v2, which requires identifiers.',
                 '[ERROR] Found 1 error',
             ],
         ];
@@ -200,7 +198,7 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         ];
     }
 
-    public function testDecoratedSummaryShowsColorsAndNotes(): void
+    public function testSummaryShowsSpecialIdentifierNotes(): void
     {
         $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
         $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
@@ -214,17 +212,14 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 
         $analysisResult = $this->createAnalysisResult($fileErrors, [], []);
 
-        $exitCode = $formatter->formatErrors($analysisResult, $this->getOutput(true));
-        $outputContent = StringUtil::rtrimByLines($this->getOutputContent(true));
+        $exitCode = $formatter->formatErrors($analysisResult, $this->getOutput(false));
+        $outputContent = StringUtil::rtrimByLines($this->getOutputContent(false));
 
         self::assertSame(1, $exitCode);
-        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('green', 'ignore.unmatched'), $outputContent);
-        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('yellow', '<no-identifier>'), $outputContent);
-        self::assertMatchesRegularExpression($this->buildErrorSummaryPattern('red', 'missingType'), $outputContent);
-        self::assertStringContainsString('ℹ️  Note:', $outputContent);
-        self::assertStringContainsString('🎉', $outputContent);
-        self::assertStringContainsString('⚠️', $outputContent);
-        self::assertStringContainsString('🚨', $outputContent);
+        self::assertStringContainsString('ignore.unmatched (in 1 file, can be removed after baseline update)', $outputContent);
+        self::assertStringContainsString('<no-identifier> (in 1 file, consider upgrading to PHPStan v2)', $outputContent);
+        self::assertStringContainsString('missingType (in 1 file)', $outputContent);
+        self::assertStringContainsString('🚨 1 errors cannot be ignored by baseline', $outputContent);
     }
 
     /**
@@ -292,35 +287,5 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
 
         // @phpstan-ignore-next-line
         return new AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), false);
-    }
-
-    /**
-     * Builds a regular expression pattern for matching ANSI-colored error summary lines.
-     *
-     * The pattern matches lines that contain a colored count of errors or warnings,
-     * a colored identifier (such as "errors" or "warnings"), and a colored file count
-     * in parentheses, using the same ANSI escape sequences as produced by the formatter.
-     *
-     * @param string $colorCode  One of the keys of the internal ANSI color map (e.g. 'green', 'yellow', 'red').
-     * @param string $identifier the text identifier to match (for example "errors" or "warnings")
-     * @param int    $count      the expected number of errors or warnings to appear in the summary
-     * @param int    $fileCount  the expected number of files to appear in the summary
-     *
-     * @return string regular expression pattern for matching the formatted summary line
-     */
-    private function buildErrorSummaryPattern(string $colorCode, string $identifier, int $count = 1, int $fileCount = 1): string
-    {
-        $ansiColorCodes = [
-            'green' => '\x1b\[32m',
-            'yellow' => '\x1b\[33m',
-            'red' => '\x1b\[31m',
-        ];
-        $colorPattern = $ansiColorCodes[$colorCode];
-        $identifierColorPattern = '\x1b\[33m';
-        $grayPattern = '\x1b\[90m';
-        $resetPattern = '\x1b\[[0-9;]*m';
-        $escapedIdentifier = preg_quote($identifier, '/');
-
-        return "/{$colorPattern}{$count}{$resetPattern}\\s+{$identifierColorPattern}{$escapedIdentifier}{$resetPattern} {$grayPattern}\\(in {$fileCount} files?\\){$resetPattern}/";
     }
 }

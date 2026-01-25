@@ -14,7 +14,7 @@ class SummaryWriter
     {
         /** @var array<string, int> $errorCounter */
         $errorCounter = [];
-        $nonignorableCounter = 0;
+        $nonIgnorableCounter = 0;
 
         /** @var array<string, array<string, true>> $files files per identifier */
         $files = [];
@@ -33,32 +33,31 @@ class SummaryWriter
 
             $uniqueFiles[$file] = true;
 
-            if (!$error->canBeIgnored()) {
-                ++$nonignorableCounter;
+            // Count non-ignorable errors excluding ignore.unmatched
+            if (!$error->canBeIgnored() && $identifier !== self::IDENTIFIER_IGNORE_UNMATCHED) {
+                ++$nonIgnorableCounter;
             }
         }
 
         arsort($errorCounter);
 
-        $output->writeLineFormatted('📊 Error Identifier Summary:');
+        $output->writeLineFormatted('📈 Error Identifier Summary:');
         $output->writeLineFormatted('────────────────────────────');
 
         foreach ($errorCounter as $identifier => $count) {
             $fileCount = \count($files[$identifier]);
             $suffix = $this->getFileSuffix($fileCount);
-            $color = match ($identifier) {
-                self::IDENTIFIER_IGNORE_UNMATCHED => 'green',
-                self::IDENTIFIER_NO_IDENTIFIER => 'yellow',
-                default => 'red',
-            };
+            $note = $identifier === self::IDENTIFIER_IGNORE_UNMATCHED
+                ? ', can be removed after baseline update'
+                : '';
 
             $output->writeLineFormatted(\sprintf(
-                "  <fg=%s>%d</>  <fg=yellow>%s</> <fg=gray>(in %d %s)</>",
-                $color,
+                '  %d  %s <fg=gray>(in %d %s%s)</>',
                 $count,
                 $identifier,
                 $fileCount,
-                $suffix
+                $suffix,
+                $note
             ));
         }
 
@@ -68,37 +67,46 @@ class SummaryWriter
         $output->writeLineFormatted('📊 Summary:');
         $output->writeLineFormatted('───────────');
 
-        $output->writeLineFormatted(\sprintf('❌ Found <fg=red>%d</> errors', $analysisResult->getTotalErrorsCount()));
-        $output->writeLineFormatted(\sprintf('🏷️  In <fg=red>%d</> error categories', \count($errorCounter)));
+        $totalErrors = $analysisResult->getTotalErrorsCount();
+        $output->writeLineFormatted(\sprintf('❌ Found <fg=red>%d</> errors', $totalErrors));
+
+        $unmatchedCount = $errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED] ?? 0;
+
+        $treeItems = [];
+
+        $noIdentifierCount = $errorCounter[self::IDENTIFIER_NO_IDENTIFIER] ?? 0;
+
+        if ($unmatchedCount > 0) {
+            $toFixCount = $totalErrors - $unmatchedCount;
+            $treeItems[] = \sprintf('%d %s to fix', $toFixCount, $this->getErrorSuffix($toFixCount));
+            $treeItems[] = \sprintf('%d %s can be removed from baseline', $unmatchedCount, $this->getErrorSuffix($unmatchedCount));
+        }
+
+        if ($noIdentifierCount > 0) {
+            $treeItems[] = \sprintf('%d %s have no identifier', $noIdentifierCount, $this->getErrorSuffix($noIdentifierCount));
+        }
+
+        if ($nonIgnorableCounter > 0) {
+            $treeItems[] = \sprintf('%d %s cannot be ignored by baseline', $nonIgnorableCounter, $this->getErrorSuffix($nonIgnorableCounter));
+        }
+
+        $lastIndex = \count($treeItems) - 1;
+        foreach ($treeItems as $index => $item) {
+            $prefix = $index === $lastIndex ? '└─' : '├─';
+            $output->writeLineFormatted(\sprintf('   %s %s', $prefix, $item));
+        }
+
+        $output->writeLineFormatted(\sprintf('🏷️ In <fg=red>%d</> error identifiers', \count($errorCounter)));
         $output->writeLineFormatted(\sprintf('📂 Across <fg=red>%d</> %s', $totalFileCount, $suffix));
-
-        $notes = [];
-
-        if (isset($errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED])) {
-            $notes[] = \sprintf('🎉 <fg=green>%d</> errors can be removed after updating the baseline.', $errorCounter[self::IDENTIFIER_IGNORE_UNMATCHED]);
-        }
-
-        if (isset($errorCounter[self::IDENTIFIER_NO_IDENTIFIER])) {
-            $notes[] = \sprintf('⚠️  <fg=yellow>%d</> errors have no identifier. Consider upgrading to PHPStan v2, which requires identifiers.', $errorCounter[self::IDENTIFIER_NO_IDENTIFIER]);
-        }
-
-        if (0 !== $nonignorableCounter) {
-            $notes[] = \sprintf('🚨 <fg=red>%d</> errors cannot be ignored by baseline!', $nonignorableCounter);
-        }
-
-        if ([] !== $notes) {
-            $output->writeLineFormatted('');
-            $output->writeLineFormatted('ℹ️  Note:');
-            $output->writeLineFormatted('────────');
-
-            foreach ($notes as $note) {
-                $output->writeLineFormatted($note);
-            }
-        }
     }
 
     private function getFileSuffix(int $count): string
     {
         return 1 === $count ? 'file' : 'files';
+    }
+
+    private function getErrorSuffix(int $count): string
+    {
+        return 1 === $count ? 'error' : 'errors';
     }
 }
