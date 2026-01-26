@@ -12,11 +12,28 @@ parameters:
         editorUrl: null
 
 services:
+    errorFormatter.github:
+        class: PHPStan\Command\ErrorFormatter\GithubErrorFormatter
+        arguments:
+            relativePathHelper: @relativePathHelper
+
+    errorFormatter.teamcity:
+        class: PHPStan\Command\ErrorFormatter\TeamcityErrorFormatter
+        arguments:
+            relativePathHelper: @relativePathHelper
+
+    errorFormatter.ciDetected:
+        class: PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter
+        arguments:
+            githubErrorFormatter: @errorFormatter.github
+            teamcityErrorFormatter: @errorFormatter.teamcity
+
     errorFormatter.friendly:
         class: Yamadashy\PhpStanFriendlyFormatter\FriendlyErrorFormatter
         arguments:
             relativePathHelper: @relativePathHelper
             simpleRelativePathHelper: @simpleRelativePathHelper
+            ciDetectedErrorFormatter: @errorFormatter.ciDetected
             lineBefore: %friendly.lineBefore%
             lineAfter: %friendly.lineAfter%
             editorUrl: %friendly.editorUrl%

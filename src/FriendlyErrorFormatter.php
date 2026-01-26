@@ -4,6 +4,7 @@ namespace Yamadashy\PhpStanFriendlyFormatter;
 
 use PHPStan\Analyser\Error;
 use PHPStan\Command\AnalysisResult;
+use PHPStan\Command\ErrorFormatter\CiDetectedErrorFormatter;
 use PHPStan\Command\ErrorFormatter\ErrorFormatter;
 use PHPStan\Command\Output;
 use PHPStan\File\RelativePathHelper;
@@ -20,18 +21,23 @@ class FriendlyErrorFormatter implements ErrorFormatter
     /** @var SimpleRelativePathHelper */
     private $simpleRelativePathHelper;
 
+    /** @var CiDetectedErrorFormatter */
+    private $ciDetectedErrorFormatter;
+
     /** @var FriendlyFormatterConfig */
     private $config;
 
     public function __construct(
         RelativePathHelper $relativePathHelper,
         SimpleRelativePathHelper $simpleRelativePathHelper,
+        CiDetectedErrorFormatter $ciDetectedErrorFormatter,
         int $lineBefore,
         int $lineAfter,
         ?string $editorUrl
     ) {
         $this->relativePathHelper = $relativePathHelper;
         $this->simpleRelativePathHelper = $simpleRelativePathHelper;
+        $this->ciDetectedErrorFormatter = $ciDetectedErrorFormatter;
         $this->config = new FriendlyFormatterConfig(
             $lineBefore,
             $lineAfter,
@@ -47,6 +53,8 @@ class FriendlyErrorFormatter implements ErrorFormatter
         if (!$analysisResult->hasErrors() && !$analysisResult->hasWarnings()) {
             return $this->handleNoErrors($output);
         }
+
+        $this->ciDetectedErrorFormatter->formatErrors($analysisResult, $output);
 
         $output->writeLineFormatted('');
 
