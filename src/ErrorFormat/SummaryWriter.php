@@ -24,7 +24,7 @@ class SummaryWriter
 
         foreach ($analysisResult->getFileSpecificErrors() as $error) {
             $identifier = $error->getIdentifier() ?? self::IDENTIFIER_NO_IDENTIFIER;
-            $file = $error->getFile();
+            $file = $error->getTraitFilePath() ?? $error->getFilePath();
 
             $errorCounter[$identifier] ??= 0;
             ++$errorCounter[$identifier];
