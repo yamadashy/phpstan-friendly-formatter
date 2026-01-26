@@ -75,7 +75,7 @@ class ErrorWriter
                 }
 
                 if (null !== $errorIdentifier) {
-                    $output->writeLineFormatted("  <fg=default>🪪  {$errorIdentifier}</>");
+                    $output->writeLineFormatted("  <fg=default>🏷️  {$errorIdentifier}</>");
                 }
 
                 if (\is_string($this->config->editorUrl)) {

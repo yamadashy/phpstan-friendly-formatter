@@ -73,6 +73,12 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     14|     }
     15|
     16| }',
+                '📈 Error Identifier Summary:',
+                ' <no-identifier> (in 1 file)',
+                '📊 Summary:',
+                '❌ Found 1 errors',
+                '🏷️ In 1 error identifiers',
+                '📂 Across 1 file',
                 '[ERROR] Found 1 error',
             ],
         ];
@@ -192,6 +198,30 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
         ];
     }
 
+    public function testSummaryShowsSpecialIdentifierNotes(): void
+    {
+        $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
+        $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, 3, 3, null);
+
+        $fileErrors = [
+            new Error('Ignore unmatched', __DIR__.'/data/AnalysisTargetFoo.php', 13, true, null, null, null, null, null, 'ignore.unmatched'),
+            new Error('No identifier', __DIR__.'/data/AnalysisTargetFoo.php', 15),
+            new Error('Non ignorable', __DIR__.'/data/AnalysisTargetBar.php', 9, false, null, null, null, null, null, 'missingType'),
+        ];
+
+        $analysisResult = $this->createAnalysisResult($fileErrors, [], []);
+
+        $exitCode = $formatter->formatErrors($analysisResult, $this->getOutput(false));
+        $outputContent = StringUtil::rtrimByLines($this->getOutputContent(false));
+
+        self::assertSame(1, $exitCode);
+        self::assertStringContainsString('ignore.unmatched (in 1 file, can be removed after baseline update)', $outputContent);
+        self::assertStringContainsString('<no-identifier> (in 1 file)', $outputContent);
+        self::assertStringContainsString('missingType (in 1 file)', $outputContent);
+        self::assertStringContainsString('1 error cannot be ignored by baseline', $outputContent);
+    }
+
     /**
      * @throws ShouldNotHappenException
      */
@@ -214,6 +244,16 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
             'first warning', 'second warning',
         ], 0, $numWarnings);
 
+        return $this->createAnalysisResult($fileErrors, $genericErrors, $warnings);
+    }
+
+    /**
+     * @param list<Error>  $fileErrors
+     * @param list<string> $genericErrors
+     * @param list<string> $warnings
+     */
+    private function createAnalysisResult(array $fileErrors, array $genericErrors, array $warnings): AnalysisResult
+    {
         $reflectionMethod = new \ReflectionMethod(AnalysisResult::class, '__construct');
         $numOfParams = $reflectionMethod->getNumberOfParameters();
 

@@ -3,6 +3,7 @@
 
 includes:
     - ../extension.neon
+    - baseline.neon
 
 parameters:
     level: 9
