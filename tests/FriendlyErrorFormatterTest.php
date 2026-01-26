@@ -206,7 +206,8 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
     {
         $relativePathHelper = new FuzzyRelativePathHelper(new NullRelativePathHelper(), '', [], '/');
         $simpleRelativePathHelper = new SimpleRelativePathHelper((string) getcwd());
-        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, 3, 3, null);
+        $ciDetectedErrorFormatter = new CiDetectedErrorFormatter(new GithubErrorFormatter($relativePathHelper), new TeamcityErrorFormatter($relativePathHelper));
+        $formatter = new FriendlyErrorFormatter($relativePathHelper, $simpleRelativePathHelper, $ciDetectedErrorFormatter, 3, 3, null);
 
         $fileErrors = [
             new Error('Ignore unmatched', __DIR__.'/data/AnalysisTargetFoo.php', 13, true, null, null, null, null, null, 'ignore.unmatched'),
