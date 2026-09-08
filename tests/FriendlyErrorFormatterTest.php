@@ -296,7 +296,8 @@ final class FriendlyErrorFormatterTest extends ErrorFormatterTestCase
             return new AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), true, [], []);
         }
 
+        // compatibility to 2.2.13 or later (added $resultCacheExisted, $workerCount)
         // @phpstan-ignore-next-line
-        return new AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), true, [], []);
+        return new AnalysisResult($fileErrors, $genericErrors, [], $warnings, [], false, null, true, memory_get_peak_usage(true), true, [], true, 0);
     }
 }
