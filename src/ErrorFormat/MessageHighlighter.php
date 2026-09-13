@@ -16,7 +16,7 @@ class MessageHighlighter
 {
     private const EXPECTED_STYLE = 'fg=green;options=bold';
 
-    private const ACTUAL_STYLE = 'fg=yellow;options=bold';
+    private const ACTUAL_STYLE = 'fg=red;options=bold';
 
     /** @var array<string, string> */
     private const BRACKET_PAIRS = [
