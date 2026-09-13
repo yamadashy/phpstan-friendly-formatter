@@ -128,6 +128,14 @@ class ErrorWriter
             return null;
         }
 
-        return implode("\n    ", explode("\n", $tip));
+        $lines = array_map(
+            function (string $line): string {
+                // Tips may contain their own console markup, so unmatched lines are left untouched.
+                return $this->messageHighlighter->tryHighlight($line) ?? $line;
+            },
+            explode("\n", $tip),
+        );
+
+        return implode("\n    ", $lines);
     }
 }

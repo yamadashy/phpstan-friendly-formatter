@@ -10,6 +10,7 @@ Enhance your [PHPStan](https://phpstan.org/) experience with a formatter that br
 ## 🌟 Features
 
 - **Display Code Frame**: See the problematic code right where the error occurs
+- **Type Highlighting**: In messages and tips that pair two types, the expected (declared) type is shown in green and the actual one in red. Highlighting is best-effort: unrecognized messages are printed unchanged
 - **Error Identifier Summary**: Get a quick overview of error types and their frequencies
 - **Beautiful Output**: Enjoy a visually appealing and easy-to-read error report
 
