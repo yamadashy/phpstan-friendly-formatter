@@ -22,6 +22,9 @@ class ErrorWriter
     /** @var FriendlyFormatterConfig */
     private $config;
 
+    /** @var MessageHighlighter */
+    private $messageHighlighter;
+
     public function __construct(
         RelativePathHelper $relativePathHelper,
         SimpleRelativePathHelper $simpleRelativePathHelper,
@@ -30,6 +33,7 @@ class ErrorWriter
         $this->relativePathHelper = $relativePathHelper;
         $this->simpleRelativePathHelper = $simpleRelativePathHelper;
         $this->config = $config;
+        $this->messageHighlighter = new MessageHighlighter();
     }
 
     public function writeFileSpecificErrors(AnalysisResult $analysisResult, Output $output): void
@@ -49,7 +53,7 @@ class ErrorWriter
             $output->writeLineFormatted('');
 
             foreach ($errors as $error) {
-                $message = $error->getMessage();
+                $message = $this->messageHighlighter->highlight($error->getMessage());
                 $tip = $this->getFormattedTip($error);
                 $errorIdentifier = $error->getIdentifier();
                 $filePath = $error->getTraitFilePath() ?? $error->getFilePath();
