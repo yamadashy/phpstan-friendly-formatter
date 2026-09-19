@@ -54,3 +54,12 @@ class TypedClass
         $this->name = 42; // Error: wrong type
     }
 }
+
+// 6. Array shape mismatch (shows expected/actual type highlighting)
+/** @param array{id: int, name: string} $user */
+function saveUser(array $user): void
+{
+    echo $user['name'];
+}
+
+saveUser(['id' => 'abc', 'name' => 42]); // Error: expected/actual array shapes
